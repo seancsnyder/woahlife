@@ -12,6 +12,13 @@
 
         public static function getLogger()
         {
+            //TODO put this stuff in a bootstrap APP_PATH
+            $baseDirectory = "";
+
+            if (!empty($_SERVER['DOCUMENT_ROOT'])) {
+                $baseDirectory = $_SERVER['DOCUMENT_ROOT'] . "/../";
+            }
+
             static $logger = null;
 
             if ($logger == null) {
@@ -19,11 +26,16 @@
                 $output = "[%datetime%] [%level_name%] %message%\n";
 
                 $formatter = new LineFormatter($output, $dateFormat);
-                $stream = new StreamHandler('logs/app.log', Logger::DEBUG);
+                $stream = new StreamHandler($baseDirectory . 'logs/app.log', Logger::DEBUG);
                 $stream->setFormatter($formatter);
 
                 $logger = new Logger('woahlog');
                 $logger->pushHandler($stream);
+
+                //TODO if in dev environment...
+                $stdout = new StreamHandler('php://output', Logger::DEBUG);
+                $stdout->setFormatter($formatter);
+                $logger->pushHandler($stdout);
             }
             
             return $logger;
