@@ -1,0 +1,4 @@
+vendor
+logs
+config/mailgun.ini
+config/mysql.ini

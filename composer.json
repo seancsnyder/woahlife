@@ -1,0 +1,14 @@
+{
+    "name": "seancsnyder/woahlife",
+    "description": "keeping a daily journal by sending and receiving email",
+    "require": {
+        "mailgun/mailgun-php": "~1.7",
+        "doctrine/dbal": "2.3.5",
+        "monolog/monolog": "1.11.0"
+    },
+    "autoload": {
+        "classmap": [
+            "library"
+        ]
+    }
+}
