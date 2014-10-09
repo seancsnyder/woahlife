@@ -16,7 +16,7 @@
         public function signupUser($postData) {
 
             if (empty($postData['sender']) || empty($postData['Message-Id'])) {
-                throw new Exception("Invalid post data for signup. missing sender and Message-Id");
+                throw new \Exception("Invalid post data for signup. missing sender and Message-Id");
             }
 
             Logging::getLogger()->addDebug("processing signup {$postData['Message-Id']}");

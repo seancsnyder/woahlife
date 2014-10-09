@@ -5,6 +5,7 @@
     require_once("../bootstrap.php");
     
     use Woahlife\User;
+    use Woahlife\Logging;
     
     try {
         $user = new User();

@@ -12,6 +12,9 @@
 
     define("APP_DIRECTORY", $baseDirectory);
 
+    // change this to DEV, if you want the logs printed to stdout
+    define("APP_MODE", 'PRODUCTION');
+
     require_once "vendor/autoload.php";
 
 ?>

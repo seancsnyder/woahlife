@@ -25,10 +25,11 @@
                 $logger = new Logger('woahlog');
                 $logger->pushHandler($stream);
 
-                //TODO if in dev environment...
-                $stdout = new StreamHandler('php://output', Logger::DEBUG);
-                $stdout->setFormatter($formatter);
-                $logger->pushHandler($stdout);
+                if (APP_MODE === "DEV") {
+                    $stdout = new StreamHandler('php://output', Logger::DEBUG);
+                    $stdout->setFormatter($formatter);
+                    $logger->pushHandler($stdout);
+                }
             }
             
             return $logger;

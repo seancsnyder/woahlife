@@ -5,6 +5,7 @@
     require_once("../bootstrap.php");
     
     use Woahlife\Entry;
+    use Woahlife\Logging;
 
     try {
         $entry = new Entry();

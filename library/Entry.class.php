@@ -16,7 +16,7 @@
         public function saveEntry($postData) {
 
             if (empty($postData['sender']) || empty($postData['Message-Id'])) {
-                throw new Exception("Invalid post data for journal entry. missing sender and Message-Id");
+                throw new \Exception("Invalid post data for journal entry. missing sender and Message-Id");
             }
 
             Logging::getLogger()->addDebug("processing journal post {$postData['Message-Id']}");
@@ -29,7 +29,7 @@
             Logging::getLogger()->addDebug("found user id for {$_POST['sender']}: {$userId}");
 
             if (empty($userId)) {
-                throw new Exception("unable to find user id for {$_POST['sender']}");
+                throw new \Exception("unable to find user id for {$_POST['sender']}");
             }
 
             //TODO don't rely on the mailgun posted fields...
