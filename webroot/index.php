@@ -1,4 +1,4 @@
 <?php
-    header("Location: http://github.com/users/seancsnyder/woahlife");
+    header("Location: https://github.com/seancsnyder/woahlife");
     exit();
 ?>
