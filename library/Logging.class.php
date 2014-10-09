@@ -23,8 +23,6 @@
 
                 $formatter = new LineFormatter($output, $dateFormat);
 
-                echo APP_DIRECTORY . self::APP_LOG_DIRECTORY;
-
                 if (!is_dir(APP_DIRECTORY . self::APP_LOG_DIRECTORY)) {
                     throw new \Exception(
                         "'logs' directory does not exist. "
