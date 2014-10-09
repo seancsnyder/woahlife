@@ -19,40 +19,56 @@ but we have a lot of moving pieces...
     <li>Setup the email routes in Mailgun.  These routes will let Mailgun handle the emails that people will send to your domain.<br/>
         At a minimum, you need two routes setup.  example:<br/>
 
-        ```
-        Filter Expression = match_recipient("signup@yourdomain.com")  
+        <blockquote>
+        Filter Expression = match_recipient("signup@yourdomain.com") <br/>
         Action = store(notify="http://www.yourdomain.com/receiveSignup.php")
-        ```
-        and
-        ```
+        </blockquote>
+
+        and<br/>
+        <blockquote>
         Filter Expression = match_recipient("post@yourdomain.com")    
         Action = store(notify="http://www.yourdomain.com/receivePost.php")
-        ```
+        </blockquote>
 
         When someone emails post@yourdomain.com, mailgun will accept the email, store it, and will HTTP POST the entire email 
         message to that url.</li>
 
     <li>You'll need a lamp/lemp stack.  If you're completely lost, this is a pretty good walkthrough, <br/>
-        https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-on-ubuntu-12-04</li>
+        <a href="https://www.digitalocean.com/community/tutorials/how-to-install-linux-nginx-mysql-php-lemp-stack-on-ubuntu-12-04">Lamp Tutorial</a></li>
     <li>Once you have it up and running, with at least one virtual host configured, set the A record for your domain to your server</li>
     <li>Git clone this repo into the site directory you setup.<br/>
         For example, if you configured your document root to be /var/www/mysite.com/<br/>
-        Go ahead and clone this repo into /var/ww/mysite.com  This will expose the entire codebase, which is bad, so update
-        your nginx configuration to set the document root to /var/ww/mysite.com/webroot/ and then restart nginx.</li>
-    <li>From the /var/www/mysite.com/ directory, run 'composer install' to get all of the dependcies up to date.  <br/>
+        Go ahead and clone this repo into <b>/var/ww/mysite.com</b> <br/>
+        We will refer to this directory as your APP_PATH.  Unfortunately, this will expose the entire codebase, which is bad, so update
+        your nginx configuration to set the document root to <b>/var/ww/mysite.com/webroot/</b> and then restart nginx.</li>
+    <li>From the APP_PATH directory (ex: /var/www/mysite.com/), run <b>composer install</b> to get all of the dependcies up to date.  <br/>
         If you don't have composer, go here, https://getcomposer.org/</li>
     <li>Create a mysql database. Run some sql.  <br/>
-        The sql to create the required tables are in the config/bootstrap.sql file.</li>
-    <li>Update the config/mailgun-sample.ini file with your actual mailgun information and the domain you plan on using.<br/>
-        Then, rename the file to "mailgun.ini" in the same directory</li>
-    <li>Update the config/mysql-sample.ini" file with your actual mysql database information and the domain you plan on using.<br/>
-        Then, rename the file to "mysql.ini" in the same directory</li>
-    <li>Give the 'logs' directory the correct group ownership and/or file permissions to be writable by your webserver.<br/>
-        I used nginx, so i set the group ownership to www-data and gave the group write permissions to that directory.</li>
-    <li>Configure a cron to run every day, or as often as you'd like, to run the app/sendDailyEmail.php script.  <Br/>
+        The sql to create the required tables are in the <b>config/bootstrap.sql</b> file.
+        <blockquote>mysql -h YOUR_HOST -u YOUR_USERNAME -p -D YOUR_DATABASE_NAME < config/bootstrap.sql</blockquote>
+        </li>
+    <li>Update the <b>config/mailgun-sample.ini</b> file with your actual mailgun information and the domain you plan on using.<br/>
+        Then, rename the file to <b>mailgun.ini</b> in the same directory.
+        <blockquote>mv config/mailgun-sample.ini config/mailgun.ini</blockquote>
+        </li>
+    <li>Update the <b>config/mysql-sample.ini</b> file with your actual mysql database information and the domain you plan on using.<br/>
+        Then, rename the file to mysql.ini</b> in the same directory
+        <blockquote>mv config/mysql-sample.ini config/mysql.ini</blockquote>
+        </li>
+    <li>Give the <b>logs</b> directory the correct group ownership and/or file permissions to be writable by your webserver.<br/>
+        I used nginx, so i set the group ownership to www-data and gave the group write permissions to that directory.
+        <blockquote>
+            chown :www-data logs;<br/>
+            chmod g+w logs;
+        </blockquote>
+        </li>
+    <li>Configure a cron to run every day, or as often as you'd like, to run the <b>app/sendDailyEmail.php</b> script.  <br/>
         That script will fire off the email to all active registered users in your database.  Upon replying to that email
-        Mailgun will post the email to the route you setup in step 4.  That step will save the message to your mysql database.</li>
-    <li>Send an email to signup@yourdomain.com<br/>
+        Mailgun will post the email to the route you setup in step 4.  That script will save the message to your database.<br/>
+        For example: I wanted the email to be sent to me every day at 5pm so i added this to my crontab:
+        <blockquote>0 5 * * * /usr/bin/php /var/www/yourdomain.com/app/sendDailyEmail.php</blockquote>
+        </li>
+    <li>Send an email to <b>signup@yourdomain.com</b><br/>
         Within a few seconds, you should see it get posted to your site and create a new user.</li>
 </ol>
 
