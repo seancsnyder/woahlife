@@ -1,9 +1,9 @@
 <?php
     /**
      * send the daily journal entry email to all active users
-     */
-    require_once "vendor/autoload.php";
-    
+     */    
+    require_once("../bootstrap.php");
+
     use Woahlife\Db;
     use Woahlife\Logging;    
     use Woahlife\MailgunClient;
@@ -25,6 +25,7 @@
         foreach($users as $user) {
             Logging::getLogger()->addDebug("processing {$user['email']}");          
             
+            //TODO use the batch messaging system.
             $mailgunned = $mailgunner->sendMessage($user);
 
             if ($mailgunned->http_response_code === 200) {

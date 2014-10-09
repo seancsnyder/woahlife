@@ -10,14 +10,7 @@
 
         public function __construct()
         {
-            //TODO put this stuff in a bootstrap APP_PATH
-            $baseDirectory = "";
-
-            if (!empty($_SERVER['DOCUMENT_ROOT'])) {
-                $baseDirectory = $_SERVER['DOCUMENT_ROOT'] . "/../";
-            }
-
-            $this->mailgunConfig = parse_ini_file($baseDirectory . 'config/mailgun.ini');
+            $this->mailgunConfig = parse_ini_file(APP_DIRECTORY . 'config/mailgun.ini');
 
             $this->mailgunner = new Mailgun($this->mailgunConfig['apiKey']);
         }

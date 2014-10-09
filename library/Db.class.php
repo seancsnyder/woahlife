@@ -12,15 +12,8 @@
 
         public function __construct()
         {
-            //TODO put this stuff in a bootstrap APP_PATH
-            $baseDirectory = "";
-
-            if (!empty($_SERVER['DOCUMENT_ROOT'])) {
-                $baseDirectory = $_SERVER['DOCUMENT_ROOT'] . "/../";
-            }
-
             Logging::getLogger()->addDebug("parsing mysql config file");
-            $this->mysqlConfiguration = parse_ini_file($baseDirectory . 'config/mysql.ini');
+            $this->mysqlConfiguration = parse_ini_file(APP_DIRECTORY . 'config/mysql.ini');
             Logging::getLogger()->addDebug("done parsing mysql config file");
 
             $dbalConfig = new \Doctrine\DBAL\Configuration();

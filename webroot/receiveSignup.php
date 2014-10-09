@@ -2,7 +2,7 @@
     /**
      * handle the callback from mailgun when someone tries to signup
      */
-    require_once "../vendor/autoload.php";
+    require_once("../bootstrap.php");
     
     use Woahlife\Db;
     use Woahlife\Logging;    
