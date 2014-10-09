@@ -1,13 +1,20 @@
 I was a big fan of ohlife.com, but it'll be shutdown soon...
-I'm building my own version of it, for my own usage, but feel free to clone it and use your own mailgun account.
-Instead of supporting an entire site, I just want to setup come mailgun routes and a cron to send me email, as well as handle the signup of users. 
 
-Here is how to set it up for yourself....sorry it's so many steps, but we have a lot of moving pieces...
+For those that don't know, ohlife.com was a really great way to maintain an journal.  Everyday, at a user configured time, ohlife would
+send you an email asking about your day. All you had to do was respond to that email, and ohlife would save the response as a journal entry.
+Ohlife provided a site, with a way to search and download your entries.  They also had a premium version that let you customize the 
+email message that was sent to you and a way to auto backup your entries to dropbox.
+
+I chose to dumb down the functionality a bit since I only plan on using this for myself.  I don't need a web interface or an easy export button,
+since I have full access.
+
+Feel free to clone it and use your own mailgun account.  Here is how to set it up for yourself....sorry it's so many steps, 
+but we have a lot of moving pieces...
 
 - Domain:
-    1) Buy a domain, or use an existing domain that doesn't currently have mx records setup
+    1) Buy a domain or use an existing domain that doesn't currently have mx records setup.
 - Mailgun:
-    2) Signup for an account.  The first 10k emails per month are free
+    2) Signup for an account.  The first 10k emails per month are free.
     3) Add the domain to Mailgun.  They will require you to add some dns records to verify the domain.
     4) Setup the email routes in Mailgun.  These routes will let Mailgun handle the emails that people will send to your domain.
         At a minimum, you need two routes setup.  example:
@@ -25,7 +32,7 @@ Here is how to set it up for yourself....sorry it's so many steps, but we have a
     6) Once you have it up and running, with at least one virtual host configured, set the A record for your domain to your server
     7) Git clone this repo into the site directory you setup.
         For example, if you configured your document root to be /var/www/mysite.com/
-        Go ahead and clone this repo into /var/ww/mysite.com.  This will expose the entire codebase, which is bad, so update
+        Go ahead and clone this repo into /var/ww/mysite.com  This will expose the entire codebase, which is bad, so update
         your nginx configuration to set the document root to /var/ww/mysite.com/webroot/ and then restart nginx.
     8) From the /var/www/mysite.com/ directory, run 'composer install' to get all of the dependcies up to date.  If you don't have composer, 
         go here, https://getcomposer.org/
@@ -51,4 +58,5 @@ Troubleshooting:
 - If your emails aren't getting added to the database, check the app logs, as well as the Mailgun logs.  
     The Mailgun logs are hosted at mailgun.com
 - If you don't want to use mysql, choose whatever datastore you like.  Just create a new config file
-    and update the Db.class.php to pull in the correct config file.  
+    and update the Db.class.php to pull in the correct config file. 
+- composer is freaking out...please contact me and I can help you out.
