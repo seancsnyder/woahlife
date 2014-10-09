@@ -2,7 +2,7 @@
     /**
      * send the daily journal entry email to all active users
      */    
-    require_once("../bootstrap.php");
+    require_once("bootstrap.php");
 
     use Woahlife\Db;
     use Woahlife\Logging;    
