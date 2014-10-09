@@ -66,7 +66,7 @@ but we have a lot of moving pieces...
         That script will fire off the email to all active registered users in your database.  Upon replying to that email
         Mailgun will post the email to the route you setup in step 4.  That script will save the message to your database.<br/>
         For example: I wanted the email to be sent to me every day at 5pm so i added this to my crontab:
-        <blockquote>0 5 * * * /usr/bin/php /var/www/yourdomain.com/app/sendDailyEmail.php</blockquote>
+        <blockquote>0 17 * * * /usr/bin/php /var/www/yourdomain.com/app/sendDailyEmail.php</blockquote>
         </li>
     <li>Send an email to <b>signup@yourdomain.com</b><br/>
         Within a few seconds, you should see it get posted to your site and create a new user.</li>
