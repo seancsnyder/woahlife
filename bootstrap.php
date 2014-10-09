@@ -4,7 +4,7 @@
      * stuff 
      */ 
 
-    $baseDirectory = "";
+    $baseDirectory = __DIR__ . "/";
 
     if (!empty($_SERVER['DOCUMENT_ROOT'])) {
         $baseDirectory = $_SERVER['DOCUMENT_ROOT'] . "/../";
