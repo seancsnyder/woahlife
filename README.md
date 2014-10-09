@@ -42,7 +42,8 @@ but we have a lot of moving pieces...
         Then, rename the file to "mailgun.ini" in the same directory
     11) Update the config/mysql-sample.ini" file with your actual mysql database information and the domain you plan on using.
         Then, rename the file to "mysql.ini" in the same directory
-    12) Give the 'logs' directory the correct group ownership and/or file permissions to be writable by your webserver.  
+    12) Give the 'logs' directory the correct group ownership and/or file permissions to be writable by your webserver.
+        I used nginx, so i set the group ownership to www-data and gave the group write permissions to that directory.
 
 If you've made it this far, congratulations. There are only two more things to do...
 - Cron:
