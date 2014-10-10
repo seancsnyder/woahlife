@@ -23,6 +23,10 @@
             Logging::getLogger()->addDebug("got connection to mysql server {$this->mysqlConfiguration['host']}");
         }
 
+        /**
+         * get the connection to use for querying the db
+         * @return Doctrine\DBAL\Connection
+         */
         public function getConnection()
         {
             return $this->connection;

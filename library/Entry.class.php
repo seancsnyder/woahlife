@@ -13,7 +13,8 @@
          * @param array $postData an array containing enough information to store a journal entry
          * @return bool
          */
-        public function saveEntry($postData) {
+        public function saveEntry($postData) 
+        {
 
             if (empty($postData['sender']) || empty($postData['Message-Id'])) {
                 throw new \Exception("Invalid post data for journal entry. missing sender and Message-Id");

@@ -44,5 +44,30 @@
 
             return $mailgunned;
         }
+
+        /**
+         * Send a welcome email to the user.
+         *
+         * @param string name the name of the user
+         * @param string email address to welcome
+         * @return stdClass
+         */
+        public function sendWelcomeEmail($name, $email)
+        {
+            Logging::getLogger()->addDebug("sending welcome email to {$email}");
+
+            $postData = [
+                'from' => "{$this->mailgunConfig['fromName']} <{$this->mailgunConfig['postFromAddress']}>", 
+                'to' => "{$name} <{$email}>", 
+                'subject' => "Welcome!", 
+                'text' =>  "Welcome! You should now begin to receive emails on a daily basis."
+            ];
+ 
+            $mailgunned = $this->mailgunner->sendMessage($this->mailgunConfig['domain'], $postData);
+
+            Logging::getLogger()->addDebug("done sending email to {$email}");
+
+            return $mailgunned;
+        }
     }
 ?>

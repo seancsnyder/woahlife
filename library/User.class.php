@@ -13,7 +13,8 @@
          * @param array $postData an array containing enough information to signup a new user
          * @return bool
          */
-        public function signupUser($postData) {
+        public function signupUser($postData) 
+        {
 
             if (empty($postData['sender']) || empty($postData['Message-Id'])) {
                 throw new \Exception("Invalid post data for signup. missing sender and Message-Id");
@@ -51,7 +52,15 @@
             $saved = $connection->insert('users', $dbRecord);
 
             // the db insert returns 1 when it successfully inserts 1 record, nicer to work with booleans though.
-            return ($saved === 1) ? true : false;
+            if ($saved === 1) {
+                $mailgunner = new MailgunClient();
+
+                $mailgunned = $mailgunner->sendWelcomeEmail($name, $postData['sender']);
+
+                return true;
+            }
+            
+            return false;
         }
     }
 ?>
