@@ -24,11 +24,11 @@
         public function saveEntry($postData) 
         {
             if (empty($postData['sender'])) {
-                throw new \Exception("Invalid post data for journal entry. empty or missing sender");
+                throw new \Exception("Invalid post data for journal entry. empty or missing 'sender' field.");
             } else if (empty($postData['Message-Id'])) { 
-                throw new \Exception("Invalid post data for journal entry. empty or missing Message-Id");
+                throw new \Exception("Invalid post data for journal entry. empty or missing 'Message-Id' field.");
             } else if (empty($postData['stripped-text'])) { 
-                throw new \Exception("Invalid post data for journal entry. empty/missing stripped-text");
+                throw new \Exception("Invalid post data for journal entry. empty or missing 'stripped-text' field.");
             }
 
             Logging::getLogger()->addDebug("processing journal post {$postData['Message-Id']}");
