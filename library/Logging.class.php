@@ -1,5 +1,11 @@
 <?php
 
+    /**
+     * This class is meant to handle all of the file/console logging throughout the application.
+     *
+     * @author Sean Snyder <sean@snyderitis.com>
+     */
+
     namespace Woahlife;
 
     use Monolog\Logger;
@@ -13,6 +19,10 @@
 
         protected function __construct() {}
 
+        /**
+         * singleton pattern, get the static logger from anywhere in the application
+         * @return Monolog\Logger;
+         */
         public static function getLogger()
         {
             static $logger = null;

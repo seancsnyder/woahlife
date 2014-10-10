@@ -1,6 +1,9 @@
 <?php
     /**
      * send the daily journal entry email to all active users
+     * @todo setup/handle an unsubscribe.  
+     *
+     * @author Sean Snyder <sean@snyderitis.com>
      */    
     require_once(__DIR__ . "/../bootstrap.php");
 
@@ -25,7 +28,10 @@
         foreach($users as $user) {
             Logging::getLogger()->addDebug("processing {$user['email']}");          
             
-            //TODO use the batch messaging system.
+            /**
+             * if the number of users grows to the thousands, you're better off using the
+             * MessageBuilder to handle the email sending in a batch
+             */
             $mailgunned = $mailgunner->sendDailyEmail($user);
 
             if ($mailgunned->http_response_code === 200) {

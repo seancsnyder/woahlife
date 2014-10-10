@@ -1,5 +1,11 @@
 <?php
 
+    /**
+     * This class is meant to handle the connection to the database.
+     *
+     * @author Sean Snyder <sean@snyderitis.com>
+     */ 
+
     namespace Woahlife;
 
     use Doctrine\DBAL;

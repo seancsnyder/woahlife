@@ -1,7 +1,9 @@
 <?php
     /**
      * since we didn't use a framework, like symfony or cake, we need to bootstrap some
-     * stuff 
+     * global constants that will be helpful.
+     * 
+     * @author Sean Snyder <sean@snyderitis.com>
      */ 
 
     $baseDirectory = __DIR__ . "/";

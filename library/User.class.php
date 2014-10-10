@@ -1,4 +1,9 @@
 <?php
+    /**
+     * This class is meant to handle the user signup and storage to the database.
+     *
+     * @author Sean Snyder <sean@snyderitis.com>
+     */
 
     namespace Woahlife;
 
@@ -9,7 +14,7 @@
     class User
     {
         /**
-         * given an array of data (typically posted from mailgun), signup a new user
+         * Given an array of data (typically posted from mailgun), signup a new user
          * @param array $postData an array containing enough information to signup a new user
          * @return bool
          */

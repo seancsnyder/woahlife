@@ -1,6 +1,8 @@
 <?php
     /**
-     * handle the callback from mailgun when someone tries to signup
+     * handle the callback from mailgun when someone tries to signup,.
+     *
+     * @author Sean Snyder <sean@snyderitis.com>
      */
     require_once("../bootstrap.php");
     

@@ -1,4 +1,11 @@
 <?php
+    /**
+     * This class is meant to handle all of the posting to mailgun. This is currently limited to 
+     * sending the daily journal entry email prompt as well as the signup welcome message.
+     *
+     * @author Sean Snyder <sean@snyderitis.com>
+     */
+
     namespace Woahlife;
 
     use Mailgun\Mailgun;

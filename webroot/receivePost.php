@@ -1,6 +1,8 @@
 <?php
     /**
-     * handle the callback from mailgun when someone posts a daily journal entry
+     * handle the callback from mailgun when someone posts a daily journal entry.
+     *
+     * @author Sean Snyder <sean@snyderitis.com>
      */
     require_once("../bootstrap.php");
     
