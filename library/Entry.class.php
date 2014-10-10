@@ -28,7 +28,7 @@
             } else if (empty($postData['Message-Id'])) { 
                 throw new \Exception("Invalid post data for journal entry. empty or missing Message-Id");
             } else if (empty($postData['stripped-text'])) { 
-                throw new \Exception("Invalid post data for journal entry. empty/missing stripped-text")
+                throw new \Exception("Invalid post data for journal entry. empty/missing stripped-text");
             }
 
             Logging::getLogger()->addDebug("processing journal post {$postData['Message-Id']}");
