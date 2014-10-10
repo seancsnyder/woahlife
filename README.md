@@ -80,3 +80,10 @@ but we have a lot of moving pieces...
     <li>If you don't want to use mysql, choose whatever datastore you like.  Just create a new config file<br/>
         and update the Db.class.php to pull in the correct config file. </li>
     <li>composer is freaking out...please contact me and I can help you out.</li>
+
+<h2>Cost</h2>
+    Assuming 1 signup email per person and 30 daily post emails, Mailgun's free tier of 10,000 emails per month would allow you to
+    comfortably run this service for ~300 people. <br/>
+    However, this does not take into account the server requirements and data storage.<br/>
+    For a single person, as I intend to do, it's well within the limits of a very cheap cloud server or two.
+

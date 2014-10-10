@@ -22,15 +22,15 @@
          * @param bool whether this is a test mode or not.
          * @return stdClass
          */
-        public function sendMessage($data, $testmode = false)
+        public function sendDailyEmail($data, $testmode = false)
         {
             Logging::getLogger()->addDebug("sending email to {$data['email']}");
 
             $postData = [
                 'from' => "{$this->mailgunConfig['fromName']} <{$this->mailgunConfig['postFromAddress']}>", 
                 'to' => "{$data['name']} <{$data['email']}>", 
-                'subject' => date("M d, Y") . " - How was your day?", 
-                'text' =>  "hello, how was your day? Simply reply to this email to document your day."
+                'subject' => date("l M d, Y") . " - whats up?", 
+                'text' =>  "hello..."
             ];
 
             if ($testmode === true) {

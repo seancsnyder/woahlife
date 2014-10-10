@@ -26,7 +26,7 @@
             Logging::getLogger()->addDebug("processing {$user['email']}");          
             
             //TODO use the batch messaging system.
-            $mailgunned = $mailgunner->sendMessage($user);
+            $mailgunned = $mailgunner->sendDailyEmail($user);
 
             if ($mailgunned->http_response_code === 200) {
                 Logging::getLogger()->addDebug("successfully emailed {$user['email']}");
