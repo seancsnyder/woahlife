@@ -26,10 +26,9 @@
          * Send an email to the user.
          *
          * @param array data to use during the email creation and send
-         * @param bool whether this is a test mode or not.
          * @return stdClass
          */
-        public function sendDailyEmail($data, $testmode = false)
+        public function sendDailyEmail($data)
         {
             Logging::getLogger()->addDebug("sending email to {$data['email']}");
 
@@ -40,9 +39,9 @@
                 'text' =>  "hello..."
             ];
 
-            if ($testmode === true) {
+            if (APP_MODE === "DEV") {
                 $postData['o:testmode'] = "yes";
-                Logging::getLogger()->addDebug("test mode, not sending email");
+                Logging::getLogger()->addDebug("woahlife application is in test mode, not sending email");
             }
 
             $mailgunned = $this->mailgunner->sendMessage($this->mailgunConfig['domain'], $postData);
@@ -69,6 +68,11 @@
                 'subject' => "Welcome!", 
                 'text' =>  "Welcome! You should now begin to receive emails on a daily basis."
             ];
+
+            if (APP_MODE === "DEV") {
+                $postData['o:testmode'] = "yes";
+                Logging::getLogger()->addDebug("woahlife application is in test mode, not sending email");
+            }
  
             $mailgunned = $this->mailgunner->sendMessage($this->mailgunConfig['domain'], $postData);
 

@@ -7,17 +7,12 @@
      */    
     require_once(__DIR__ . "/../bootstrap.php");
 
-    use Woahlife\Db;
+    use Woahlife\User;
     use Woahlife\Logging;    
     use Woahlife\MailgunClient;
 
-    $db = new Db();
-    $connection = $db->getConnection();
-
-    $users = $connection->fetchAll(
-        "SELECT name, email FROM users WHERE active = ?", 
-        [1]
-    );
+    $woahlifeUser = new User();
+    $users = $woahlifeUser->getAllActiveUsers();
 
     // if we have active users email them.
     if (count($users) > 0) {

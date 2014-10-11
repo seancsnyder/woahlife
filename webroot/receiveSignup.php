@@ -1,6 +1,9 @@
 <?php
     /**
-     * handle the callback from mailgun when someone tries to signup,.
+     * Handle the callback from mailgun when someone tries to signup.
+     * If Mailgun receives an HTTP 200, it considers that a success
+     * If Mailgun receives an HTTP 406, it considers it a failure, but won't retry
+     * If Mailgun receives any other response code, including a 500, it will attempt to notify
      *
      * @author Sean Snyder <sean@snyderitis.com>
      */
@@ -13,11 +16,13 @@
         $user = new User();
         $saved = $user->signupUser($_POST);  
 
-        // always respond with 200, unless an exception was thrown
+        /**
+         * Always respond with 200, unless an exception was thrown.
+         * If the user was already signed up, just silently ignore the request.
+         */
         http_response_code(200);
     } catch (Exception $e) {
-        Logging::getLogger()->addError("Unable to save journal post. " . $e->getMessage());
+        Logging::getLogger()->addError("Unable to save signup. " . $e->getMessage());
         http_response_code(500);
     }   
-
 ?>
