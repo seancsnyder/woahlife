@@ -9,7 +9,7 @@
     namespace Woahlife;
 
     use Mailgun\Mailgun;
-    use Mailgun\Entry;
+    use Woahlife\Entry;
 
     class MailgunClient 
     {
