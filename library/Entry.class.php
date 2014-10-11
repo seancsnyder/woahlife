@@ -68,6 +68,7 @@
                     "SELECT * 
                     FROM {$this->tableName} 
                     WHERE user_id = ?
+                    ORDER by entry_date ASC
                     LIMIT {$offset}, {$entriesPerIteration}", 
                     [$user['id']]
                 );
