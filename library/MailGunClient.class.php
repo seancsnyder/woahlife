@@ -66,7 +66,7 @@
                 'from' => "{$this->mailgunConfig['fromName']} <{$this->mailgunConfig['signupFromAddress']}>", 
                 'to' => "{$name} <{$email}>", 
                 'subject' => "Welcome!", 
-                'text' =>  "Welcome! You should now begin to receive emails on a daily basis."
+                'text' =>  "Thanks for signing up! You should now begin to receive emails on a daily basis."
             ];
 
             if (APP_MODE === "DEV") {
