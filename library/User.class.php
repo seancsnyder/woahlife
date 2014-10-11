@@ -16,7 +16,7 @@
         private $tableName = "users";
 
         /**
-         * get an array of all the active users
+         * Get an array of all the active users
          *
          * @return array
          */
@@ -33,6 +33,26 @@
             );
 
             return $users;
+        }
+
+        /**
+         * Find the user id by email address
+         *
+         * @return int
+         */
+        public function getUserByEmail($email)
+        {
+            $db = new Db();
+            $connection = $db->getConnection();
+
+            $userId = $connection->fetchColumn(
+                "SELECT id 
+                FROM {$this->tableName}
+                WHERE email = ?", 
+                [$email]
+            );
+
+            return $userId;
         }
 
         /**

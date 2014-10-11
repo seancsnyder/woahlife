@@ -12,6 +12,8 @@
 
     class MailgunClient 
     {
+        const SUBJECT_LINE_SUFFIX = " - what's up?";
+
         private $mailgunner;
         private $mailgunConfig;
 
@@ -35,7 +37,7 @@
             $postData = [
                 'from' => "{$this->mailgunConfig['fromName']} <{$this->mailgunConfig['postFromAddress']}>", 
                 'to' => "{$data['name']} <{$data['email']}>", 
-                'subject' => date("l M d, Y") . " - whats up?", 
+                'subject' => date("l M d, Y") . self::SUBJECT_LINE_SUFFIX, 
                 'text' =>  "hello..."
             ];
 

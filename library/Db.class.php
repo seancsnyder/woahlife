@@ -16,6 +16,9 @@
         private $connection;
         private $configuration;
 
+        /**
+         * @todo use a singleton
+         */
         public function __construct()
         {
             Logging::getLogger()->addDebug("parsing mysql config file");

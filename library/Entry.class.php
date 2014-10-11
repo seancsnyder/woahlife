@@ -11,11 +11,42 @@
     namespace Woahlife;
 
     use Woahlife\Db;
+    use Woahlife\User;
     use Woahlife\Logging;    
     use Woahlife\MailgunClient;
 
     class Entry
     {   
+        private $tableName = "entries";
+
+        /** 
+         * Since a user can respond to the email at any time, we have parse the subject line
+         * instead of looking at the date headers from Mailgun.
+         * Typically, our subject line is this format "<DATE> - how was your day?"
+         *
+         * @return int the strtotime representation of the entry
+         */
+        private function determineEntryDateTimestampFromSubjectLine($subject) 
+        {
+            Logging::getLogger()->addDebug("determining journal post date from subject line: {$subject}");
+            $subject = preg_replace("/RE:\s?/i", "", $subject);
+            $subject = preg_replace("/ - .*$/", "", $subject);
+
+            $timestamp = strtotime($subject);
+
+            Logging::getLogger()->addDebug("determined journal post date to be " . date("r", $timestamp));
+
+            /**
+             * Only use the strtotime result if it's a valid timestamp in the last 12 months.
+             * It's better to assume the entry is for today, than for 12/31/1969
+             */
+            if ($timestamp < strtotime("-12 months")) {
+                $timestamp = time();
+            }
+
+            return $timestamp;
+        }
+
         /**
          * given an array of data (typically posted from mailgun), save the journal entry.
          * @param array $postData an array containing enough information to store a journal entry
@@ -44,7 +75,8 @@
             $connection = $db->getConnection();
 
             Logging::getLogger()->addDebug("finding user id for {$_POST['sender']}");
-            $userId = $connection->fetchColumn("SELECT id FROM users WHERE email = ?", array($postData['sender']));
+            $woahlifeUser = new User();
+            $userId = $woahlifeUser->getUserByEmail($postData['sender']);
             Logging::getLogger()->addDebug("found user id for {$_POST['sender']}: {$userId}");
 
             if (empty($userId)) {
@@ -54,7 +86,7 @@
             $dbRecord = [
                 "user_id" => $userId,
                 "entry_text" => $postData['stripped-text'],
-                "entry_date" => date("Y-m-d", strtotime($postData['Date'])),
+                "entry_date" => date("Y-m-d", $this->determineEntryDateTimestampFromSubjectLine($postData['Subject'])),
                 "message_id" => $postData['Message-Id'],
                 "message_url" => $postData['message-url'],
                 "create_date" => date("Y-m-d H:i:s")
