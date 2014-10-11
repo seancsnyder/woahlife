@@ -22,8 +22,7 @@
          */
         public function getAllActiveUsers()
         {
-            $db = new Db();
-            $connection = $db->getConnection();
+            $connection = Db::getConnection();
 
             $users = $connection->fetchAll(
                 "SELECT name, email 
@@ -38,21 +37,20 @@
         /**
          * Find the user id by email address
          *
-         * @return int
+         * @return array
          */
         public function getUserByEmail($email)
         {
-            $db = new Db();
-            $connection = $db->getConnection();
+            $connection = Db::getConnection();
 
-            $userId = $connection->fetchColumn(
-                "SELECT id 
+            $user = $connection->fetchAssoc(
+                "SELECT id, email, create_date
                 FROM {$this->tableName}
                 WHERE email = ?", 
                 [$email]
             );
 
-            return $userId;
+            return $user;
         }
 
         /**
@@ -63,25 +61,21 @@
          */
         public function signupUser($postData) 
         {
-            if (empty($postData['sender']) || empty($postData['Message-Id'])) {
-                throw new \Exception("Invalid post data for signup. missing sender and Message-Id");
+            if (empty($postData['sender'])) {
+                throw new \Exception("Invalid post data for signup. missing or empty 'sender' field.");
+            } else if (empty($postData['Message-Id'])) {
+                throw new \Exception("Invalid post data for signup. missing or empty 'Message-Id' field.");
             }
 
             Logging::getLogger()->addDebug("processing signup {$postData['Message-Id']}");
 
-            $db = new Db();
-            $connection = $db->getConnection();
+            $connection = Db::getConnection();
 
             Logging::getLogger()->addDebug("attempting to find user id for {$postData['sender']}");
-            $existingUserId = $connection->fetchColumn(
-                "SELECT id 
-                FROM {$this->tableName} 
-                WHERE email = ?", 
-                [$postData['sender']]
-            );
-            Logging::getLogger()->addDebug("found user id for {$postData['sender']}: {$existingUserId}");
+            $existingUser = $this->getUserByEmail($postData['sender']);
+            Logging::getLogger()->addDebug("found user id for {$postData['sender']}: {$existingUser['id']}");
 
-            if ($existingUserId > 0) {
+            if ($existingUser != null) {
                 // don't throw an exception. could give someone information that a email address is a user...
                 return false;
             }
