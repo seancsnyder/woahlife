@@ -37,7 +37,7 @@
                 'from' => "{$this->mailgunConfig['fromName']} <{$this->mailgunConfig['postFromAddress']}>", 
                 'to' => "{$data['name']} <{$data['email']}>", 
                 'subject' => date("l M d, Y") . Entry::SUBJECT_LINE_SUFFIX, 
-                'text' =>  "hello..."
+                'text' =>  "yo. how you doing today?"
             ];
 
             if (APP_MODE === "DEV") {
