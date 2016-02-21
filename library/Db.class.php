@@ -27,15 +27,15 @@
             static $connection = null;
 
             if ($connection == null) {
-                Logging::getLogger()->addDebug("parsing mysql config file");
+                Logging::getLogger()->addDebug("Parsing mysql config file");
                 $mysqlConfiguration = parse_ini_file(APP_DIRECTORY . 'config/mysql.ini');
-                Logging::getLogger()->addDebug("done parsing mysql config file");
+                Logging::getLogger()->addDebug("Done parsing mysql config file");
 
                 $dbalConfig = new \Doctrine\DBAL\Configuration();
                 
-                Logging::getLogger()->addDebug("connectiong to mysql server {$mysqlConfiguration['host']}");
+                Logging::getLogger()->addDebug("Connectiong to mysql server {$mysqlConfiguration['host']}");
                 $connection = \Doctrine\DBAL\DriverManager::getConnection($mysqlConfiguration, $dbalConfig);
-                Logging::getLogger()->addDebug("got connection to mysql server {$mysqlConfiguration['host']}");
+                Logging::getLogger()->addDebug("Got connection to mysql server {$mysqlConfiguration['host']}");
             }
 
             return $connection;

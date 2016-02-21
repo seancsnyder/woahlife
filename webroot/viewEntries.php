@@ -11,18 +11,23 @@
     use Woahlife\User;
     
     $browseSession = new BrowsingSession();
-    $browseSession->validateBrowsingSession($_GET['token']);
     
-    $allEntries = $woahlifeEntry->getAllEntriesForUser($browseSession->user->email);
-
-    if (count($allEntries) > 0) {
-        foreach($allEntries as $entry) {
-            echo "<p>";
-            echo "{$entry['entry_date']}<br/>\n";
-            echo "{$entry['entry_text']}<br\>\n";
-            echo "</p>\n";
+    try {
+        $browseSession->validateBrowsingSession($_GET['token']);
+        
+        $allEntries = $woahlifeEntry->getAllEntriesForUser($browseSession->user->email);
+    
+        if (count($allEntries) > 0) {
+            foreach($allEntries as $entry) {
+                echo "<p>";
+                echo "{$entry['entry_date']}<br/>\n";
+                echo "{$entry['entry_text']}<br\>\n";
+                echo "</p>\n";
+            }
+        } else { 
+            echo "no entries";
         }
-    } else { 
-        echo "no entries";
+    } catch (Exception $e) {
+       echo $e->getMessage();   
     }
 ?>

@@ -31,7 +31,7 @@
          */
         public function sendDailyEmail($user)
         {
-            Logging::getLogger()->addDebug("sending email to {$user->email}");
+            Logging::getLogger()->addDebug("Sending email to {$user->email}");
 
             $postData = [
                 'from' => "{$this->mailgunConfig['fromName']} <{$this->mailgunConfig['postFromAddress']}>", 
@@ -42,13 +42,13 @@
 
             if (APP_MODE === "DEV") {
                 $postData['o:testmode'] = "yes";
-                Logging::getLogger()->addDebug("woahlife application is in test mode, not sending email");
+                Logging::getLogger()->addDebug("Application is in test mode, not sending email");
                 Logging::getLogger()->addDebug(print_r($postData, true));
             }
 
             $mailgunned = $this->mailgunner->sendMessage($this->mailgunConfig['domain'], $postData);
 
-            Logging::getLogger()->addDebug("done sending email to {$user->email}");
+            Logging::getLogger()->addDebug("Done sending email to {$user->email}");
 
             return $mailgunned;
         }
@@ -61,7 +61,7 @@
          */
         public function sendWelcomeEmail($user)
         {
-            Logging::getLogger()->addDebug("sending welcome email to {$user->email}");
+            Logging::getLogger()->addDebug("Sending welcome email to {$user->email}");
 
             $postData = [
                 'from' => "{$this->mailgunConfig['fromName']} <{$this->mailgunConfig['signupFromAddress']}>", 
@@ -72,13 +72,13 @@
 
             if (APP_MODE === "DEV") {
                 $postData['o:testmode'] = "yes";
-                Logging::getLogger()->addDebug("woahlife application is in test mode, not sending email");
+                Logging::getLogger()->addDebug("Application is in test mode, not sending email");
                 Logging::getLogger()->addDebug(print_r($postData, true));
             }
  
             $mailgunned = $this->mailgunner->sendMessage($this->mailgunConfig['domain'], $postData);
 
-            Logging::getLogger()->addDebug("done sending email to {$user->email}");
+            Logging::getLogger()->addDebug("Done sending email to {$user->email}");
 
             return $mailgunned;
         }
@@ -93,24 +93,24 @@
          */
         public function sendBrowsingSessionEmail($user, $sessionToken)
         {
-            Logging::getLogger()->addDebug("sending browsing session email to {$user->email}");
+            Logging::getLogger()->addDebug("Sending browsing session email to {$user->email}");
 
             $postData = [
                 'from' => "{$this->mailgunConfig['fromName']} <{$this->mailgunConfig['signupFromAddress']}>", 
                 'to' => "{$user->name} <{$user->email}>", 
                 'subject' => "Browse Your Journal!", 
-                'text' =>  "Click this link to browse your journal: {$this->mailgunConfig['webUrl']}/browse.php?token={$sessionToken}"
+                'text' =>  "Click this link to browse your journal: {$this->mailgunConfig['webUrl']}/viewEntries.php?token={$sessionToken}"
             ];
 
             if (APP_MODE === "DEV") {
                 $postData['o:testmode'] = "yes";
-                Logging::getLogger()->addDebug("woahlife application is in test mode, not sending email");
+                Logging::getLogger()->addDebug("Application is in test mode, not sending email");
                 Logging::getLogger()->addDebug(print_r($postData, true));
             }
  
             $mailgunned = $this->mailgunner->sendMessage($this->mailgunConfig['domain'], $postData);
 
-            Logging::getLogger()->addDebug("done sending browsing session email to {$user->email}");
+            Logging::getLogger()->addDebug("Done sending browsing session email to {$user->email}");
 
             return $mailgunned;
         }

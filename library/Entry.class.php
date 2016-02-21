@@ -98,7 +98,7 @@
                 throw new \Exception("Invalid post data for journal entry. empty or missing 'stripped-text' field.");
             }
 
-            Logging::getLogger()->addDebug("processing journal post {$postData['Message-Id']}");
+            Logging::getLogger()->addDebug("Processing journal post {$postData['Message-Id']}");
 
             /** 
              * so, we're not supposed to totally rely on the mailgun posted fields for html sanitatizing.
@@ -109,13 +109,13 @@
 
             $connection = Db::getConnection();
 
-            Logging::getLogger()->addDebug("finding user id for {$_POST['sender']}");
+            Logging::getLogger()->addDebug("Finding user id for {$_POST['sender']}");
             $user = new User();
             $user = $user->getUserByEmail($postData['sender']);
-            Logging::getLogger()->addDebug("found user id for {$_POST['sender']}: {$user->id}");
+            Logging::getLogger()->addDebug("Found user id for {$_POST['sender']}: {$user->id}");
 
             if (empty($user)) {
-                throw new \Exception("unable to find user id for {$_POST['sender']}");
+                throw new \Exception("Unable to find user id for {$_POST['sender']}");
             }
 
             $encryptionPassword = $this->determineEncryptionPassword($user);
@@ -130,7 +130,7 @@
                 "create_date" => date("Y-m-d H:i:s")
             ];
 
-            Logging::getLogger()->addDebug("saving journal post for {$postData['sender']} ({$dbRecord['user_id']}) entry date {$dbRecord['entry_date']}");
+            Logging::getLogger()->addDebug("Saving journal post for {$postData['sender']} ({$dbRecord['user_id']}) entry date {$dbRecord['entry_date']}");
 
             $saved = $connection->insert($this->tableName, $dbRecord);
 
@@ -148,7 +148,7 @@
          */
         private function determineEntryDateTimestampFromSubjectLine($subject) 
         {
-            Logging::getLogger()->addDebug("determining journal post date from subject line: {$subject}");
+            Logging::getLogger()->addDebug("Determining journal post date from subject line: {$subject}");
 
             // remove the RE: prefix
             $subject = preg_replace("/RE:\s?/i", "", $subject);
@@ -160,7 +160,7 @@
             // parse the text to determine the actual date of the journal entry
             $timestamp = strtotime($subject);
 
-            Logging::getLogger()->addDebug("determined journal post date to be " . date("r", $timestamp));
+            Logging::getLogger()->addDebug("Determined journal post date to be " . date("r", $timestamp));
 
             /**
              * Only use the strtotime result if it's a valid timestamp in the last 36 months.

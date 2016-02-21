@@ -120,26 +120,26 @@
                 throw new \Exception("Invalid post data for signup. missing or empty 'Message-Id' field.");
             }
 
-            Logging::getLogger()->addDebug("processing signup {$postData['Message-Id']}");
+            Logging::getLogger()->addDebug("Processing signup {$postData['Message-Id']}");
 
             $connection = Db::getConnection();
 
-            Logging::getLogger()->addDebug("attempting to find user id for {$postData['sender']}");
+            Logging::getLogger()->addDebug("Attempting to find user id for {$postData['sender']}");
             $existingUser = $this->getUserByEmail($postData['sender']);
-            Logging::getLogger()->addDebug("found user id for {$postData['sender']}: {$existingUser->id}");
+            Logging::getLogger()->addDebug("Found user id for {$postData['sender']}: {$existingUser->id}");
 
             if ($existingUser != null) {
                 // don't throw an exception. could give someone information that a email address is a user...
                 return false;
             }
 
-            Logging::getLogger()->addDebug("determining name by manipulating the FROM header {$postData['From']}");
+            Logging::getLogger()->addDebug("Determining name by manipulating the FROM header {$postData['From']}");
             $name = preg_replace("/\s*<?" . $postData['sender'] . ">?/", '', $postData['From']);
-            Logging::getLogger()->addDebug("determined name to be {$name}");
+            Logging::getLogger()->addDebug("Determined name to be {$name}");
 
             // if we couldn't parse out the user's name, from the formatted 'From' header, assume they're a friend.
             if (preg_match("/<|>/", $name)) {
-                Logging::getLogger()->addDebug("unable to parse out the name from the header. assuming name to be 'Friend'");
+                Logging::getLogger()->addDebug("Unable to parse out the name from the header. assuming name to be 'Friend'");
                 $name = 'Friend';
             }
 
@@ -152,7 +152,7 @@
                 "create_date" => date("Y-m-d H:i:s")
             ];
 
-            Logging::getLogger()->addDebug("saving signup for {$postData['sender']}");
+            Logging::getLogger()->addDebug("Saving signup for {$postData['sender']}");
 
             $saved = $connection->insert($this->tableName, $dbRecord);
             

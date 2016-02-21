@@ -52,14 +52,14 @@
         {
             $connection = Db::getConnection();
 
-            $userData = $connection->fetchAssoc(
+            $data = $connection->fetchAssoc(
                 "SELECT user_id, valid_until
                 FROM {$this->tableName}
-                WHERE email = ?", 
-                [$email]
+                WHERE session_token = ?", 
+                [$sessionToken]
             );
 
-            return $this->initializeObject($userData);
+            return $this->initializeObject($data);
         }
         
         /**
@@ -76,12 +76,12 @@
                 throw new \Exception("Invalid post data for signup. missing or empty 'Message-Id' field.");
             }
 
-            Logging::getLogger()->addDebug("processing browsing session generation {$postData['Message-Id']}");
+            Logging::getLogger()->addDebug("Processing browsing session generation {$postData['Message-Id']}");
 
-            Logging::getLogger()->addDebug("attempting to find user id for {$postData['sender']}");
-            $woahlifeUser = new User();
-            $user = $woahlifeUser->getUserByEmail($postData['sender']);
-            Logging::getLogger()->addDebug("found user id for {$postData['sender']}: {$user->id}");
+            Logging::getLogger()->addDebug("Attempting to find user id for {$postData['sender']}");
+            $user = new User();
+            $user = $user->getUserByEmail($postData['sender']);
+            Logging::getLogger()->addDebug("Found user id for {$postData['sender']}: {$user->id}");
 
             if ($user == null) {
                 // don't throw an exception. could give someone information that a email address is a user...
@@ -99,7 +99,7 @@
                 "valid_until" => date("Y-m-d H:i:s", strtotime("+3 hours"))
             ];
 
-            Logging::getLogger()->addDebug("saving browsing session for {$user->email}");
+            Logging::getLogger()->addDebug("Saving browsing session for {$user->email}");
 
             $saved = $connection->insert('browsing_sessions', $dbRecord);
             
@@ -135,17 +135,24 @@
          */
         public function validateBrowsingSession($sessionToken)
         {
-            $now = time();
+            Logging::getLogger()->addDebug("Validating browsing session {$sessionToken}");
             
             $browsingSession = $this->getBrowsingSessionByToken($sessionToken);
             
-            if ($browsingSession == null 
-               || strtotime($browsingSession->validUntil) < $now
-            ) {
-                throw new Exception("Invalid browsing session");
+            if ($browsingSession != null) {
+                Logging::getLogger()->addDebug(
+                    "Found browsing session for {$sessionToken}."
+                    . " Valid until {$browsingSession->validUntil}"
+                );
+                
+                if (strtotime($browsingSession->validUntil) < time()) {
+                    return $browsingSession;
+                }
             }
             
-            return $browsingSession;
+            Logging::getLogger()->addDebug("Unable to validate browsing session {$sessionToken}");
+            
+            throw new \Exception("Invalid browsing session");
         }
     }
 ?>
