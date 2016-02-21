@@ -8,14 +8,15 @@
     
     use Woahlife\BrowsingSession;
     use Woahlife\Logging;
-    use Woahlife\User;
+    use Woahlife\Entry;
     
     $browseSession = new BrowsingSession();
     
     try {
-        $browseSession->validateBrowsingSession($_GET['token']);
+        $activeBrowsingSession = $browseSession->validateBrowsingSession($_GET['token']);
         
-        $allEntries = $woahlifeEntry->getAllEntriesForUser($browseSession->user->email);
+        $entry = new Entry();
+        $allEntries = $entry->getAllEntriesForUser($activeBrowsingSession->user->email);
     
         if (count($allEntries) > 0) {
             foreach($allEntries as $entry) {

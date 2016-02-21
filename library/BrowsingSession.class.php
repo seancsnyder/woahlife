@@ -36,7 +36,7 @@
                 $object = new BrowsingSession();
                 
                 $user = new User();
-                $object->user = $user->getUserById($dataRecord['id']);
+                $object->user = $user->getUserById($dataRecord['user_id']);
                 $object->validUntil = $dataRecord['valid_until'];
             }
             
@@ -145,7 +145,9 @@
                     . " Valid until {$browsingSession->validUntil}"
                 );
                 
-                if (strtotime($browsingSession->validUntil) < time()) {
+                if (strtotime($browsingSession->validUntil) > time()) {
+                    Logging::getLogger()->addDebug("Session token {$sessionToken} is currently valid.");
+                    
                     return $browsingSession;
                 }
             }

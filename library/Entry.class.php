@@ -33,6 +33,7 @@
          * Export the journal entries for a user.
          * Paginate through the entries in groups of 50
          *
+         * @param string $email The email address we're exporting entries
          */
         public function getAllEntriesForUser($email)
         {
@@ -52,7 +53,7 @@
                 [$user->id]
             );
 
-            Logging::getLogger()->addDebug("There are {$totalEntries} for {$email}");
+            Logging::getLogger()->addDebug("There are {$totalEntries} entries for {$email}");
 
             $entriesPerIteration = 50;
             $totalIterations = ceil($totalEntries / $entriesPerIteration);
