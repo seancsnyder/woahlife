@@ -25,9 +25,15 @@ but we have a lot of moving pieces...</p>
         </blockquote>
 
         and<br/>
+        
         <blockquote>
         Filter Expression = match_recipient("post@yourdomain.com") <br/>    
         Action = store(notify="http://www.yourdomain.com/receivePost.php")
+        </blockquote>
+        
+       <blockquote>
+        Filter Expression = match_recipient("browse@yourdomain.com") <br/>    
+        Action = store(notify="http://www.yourdomain.com/receiveBrowse.php")
         </blockquote>
 
     <li>You'll need a lamp/lemp stack.  If you're completely lost, this is a pretty good walkthrough, 
@@ -80,8 +86,9 @@ but we have a lot of moving pieces...</p>
 </ul>
 
 <h2>Cost</h2>
-    <p>Assuming 1 signup email per person and 30 daily post emails, Mailgun's free tier of 10,000 emails per month would allow you to
+    Assuming 1 signup email per person and 30 posts/month, 
+    Mailgun's free tier of 10,000 emails per month would allow you to
     comfortably run this service for ~300 people.
     However, this does not take into account the server requirements and data storage.
-    For a single person, as I intend to do, it's well within the limits of a very cheap cloud server or two.</p>
+    For a single person, as I intend to do, it's well within the limits of a very cheap cloud server or two.
 

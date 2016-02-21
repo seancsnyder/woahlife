@@ -24,7 +24,9 @@
             http_response_code(500);
         }
     } catch (Exception $e) {
-        Logging::getLogger()->addError("Unable to save journal post. " . $e->getMessage());
+        Logging::getLogger()->addError(
+            "Unable to save journal post. " . $e->getMessage()
+        );
         http_response_code(500);
     }   
 ?>

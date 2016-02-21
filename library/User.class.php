@@ -14,6 +14,34 @@
     class User
     {
         private $tableName = "users";
+        
+        public $id;
+        public $name;
+        public $email;
+
+        /**
+         * Create an object from the data
+         * 
+         * @param array
+         * 
+         * @return \Woahlife\User|null
+         */
+        private function initializeObject($dataRecord)
+        {
+            $object = null;
+            
+            if (is_array($dataRecord) 
+               && count($dataRecord) > 0
+            ) {
+                $object = new User();
+                
+                $object->id = $dataRecord['id'];
+                $object->name = $dataRecord['name'];
+                $object->email = $dataRecord['email'];
+            }
+            
+            return $object;
+        }
 
         /**
          * Get an array of all the active users
@@ -24,34 +52,59 @@
         {
             $connection = Db::getConnection();
 
-            $users = $connection->fetchAll(
-                "SELECT name, email 
+            $userDataRecords = $connection->fetchAll(
+                "SELECT id, name, email 
                 FROM {$this->tableName} 
                 WHERE active = ?", 
                 [1]
             );
+            
+            $userObjects = [];
+            
+            foreach($userDataRecords as $userData) {
+                $userObjects[] = $this->initializeObject($userData);
+            }
 
-            return $users;
+            return $userObjects;
         }
 
         /**
          * Find the user id by email address
          *
-         * @return array
+         * @return \Woahlife\User
          */
         public function getUserByEmail($email)
         {
             $connection = Db::getConnection();
 
-            $user = $connection->fetchAssoc(
+            $userData = $connection->fetchAssoc(
                 "SELECT id, email, create_date
                 FROM {$this->tableName}
                 WHERE email = ?", 
                 [$email]
             );
 
-            return $user;
+            return $this->initializeObject($userData);
         }
+        
+        /**
+         * Find the user by id
+         *
+         * @return \Woahlife\User
+         */
+        public function getUserById($id)
+        {
+            $connection = Db::getConnection();
+
+            $userData = $connection->fetchAssoc(
+                "SELECT id, email, create_date
+                FROM {$this->tableName}
+                WHERE id = ?", 
+                [$id]
+            );
+
+            return $this->initializeObject($userData);
+        }        
 
         /**
          * Given an array of data (typically posted from mailgun), signup a new user
@@ -67,26 +120,26 @@
                 throw new \Exception("Invalid post data for signup. missing or empty 'Message-Id' field.");
             }
 
-            Logging::getLogger()->addDebug("processing signup {$postData['Message-Id']}");
+            Logging::getLogger()->addDebug("Processing signup {$postData['Message-Id']}");
 
             $connection = Db::getConnection();
 
-            Logging::getLogger()->addDebug("attempting to find user id for {$postData['sender']}");
+            Logging::getLogger()->addDebug("Attempting to find user id for {$postData['sender']}");
             $existingUser = $this->getUserByEmail($postData['sender']);
-            Logging::getLogger()->addDebug("found user id for {$postData['sender']}: {$existingUser['id']}");
+            Logging::getLogger()->addDebug("Found user id for {$postData['sender']}: {$existingUser->id}");
 
             if ($existingUser != null) {
                 // don't throw an exception. could give someone information that a email address is a user...
                 return false;
             }
 
-            Logging::getLogger()->addDebug("determining name by manipulating the FROM header {$postData['From']}");
+            Logging::getLogger()->addDebug("Determining name by manipulating the FROM header {$postData['From']}");
             $name = preg_replace("/\s*<?" . $postData['sender'] . ">?/", '', $postData['From']);
-            Logging::getLogger()->addDebug("determined name to be {$name}");
+            Logging::getLogger()->addDebug("Determined name to be {$name}");
 
             // if we couldn't parse out the user's name, from the formatted 'From' header, assume they're a friend.
             if (preg_match("/<|>/", $name)) {
-                Logging::getLogger()->addDebug("unable to parse out the name from the header. assuming name to be 'Friend'");
+                Logging::getLogger()->addDebug("Unable to parse out the name from the header. assuming name to be 'Friend'");
                 $name = 'Friend';
             }
 
@@ -99,15 +152,17 @@
                 "create_date" => date("Y-m-d H:i:s")
             ];
 
-            Logging::getLogger()->addDebug("saving signup for {$postData['sender']}");
+            Logging::getLogger()->addDebug("Saving signup for {$postData['sender']}");
 
-            $saved = $connection->insert('users', $dbRecord);
+            $saved = $connection->insert($this->tableName, $dbRecord);
+            
+            $newUser = $this->getUserByEmail($postData['sender']);
 
             // the db insert returns 1 when it successfully inserts 1 record, nicer to work with booleans though.
             if ($saved === 1) {
                 $mailgunner = new MailgunClient();
 
-                $mailgunned = $mailgunner->sendWelcomeEmail($name, $postData['sender']);
+                $mailgunned = $mailgunner->sendWelcomeEmail($newUser);
 
                 return true;
             }

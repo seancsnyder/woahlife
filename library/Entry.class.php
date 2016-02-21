@@ -33,6 +33,7 @@
          * Export the journal entries for a user.
          * Paginate through the entries in groups of 50
          *
+         * @param string $email The email address we're exporting entries
          */
         public function getAllEntriesForUser($email)
         {
@@ -42,17 +43,17 @@
 
             $connection = Db::getConnection();
 
-            $woahlifeUser = new User();
-            $user = $woahlifeUser->getUserByEmail($email);
+            $user = new User();
+            $user = $user->getUserByEmail($email);
 
             $totalEntries = $connection->fetchColumn(
                 "SELECT COUNT(*) AS total 
                 FROM {$this->tableName} 
                 WHERE user_id = ?", 
-                [$user['id']]
+                [$user->id]
             );
 
-            Logging::getLogger()->addDebug("There are {$totalEntries} for {$email}");
+            Logging::getLogger()->addDebug("There are {$totalEntries} entries for {$email}");
 
             $entriesPerIteration = 50;
             $totalIterations = ceil($totalEntries / $entriesPerIteration);
@@ -70,7 +71,7 @@
                     WHERE user_id = ?
                     ORDER by entry_date ASC
                     LIMIT {$offset}, {$entriesPerIteration}", 
-                    [$user['id']]
+                    [$user->id]
                 );
 
                 foreach($entries as $entry) {
@@ -98,7 +99,7 @@
                 throw new \Exception("Invalid post data for journal entry. empty or missing 'stripped-text' field.");
             }
 
-            Logging::getLogger()->addDebug("processing journal post {$postData['Message-Id']}");
+            Logging::getLogger()->addDebug("Processing journal post {$postData['Message-Id']}");
 
             /** 
              * so, we're not supposed to totally rely on the mailgun posted fields for html sanitatizing.
@@ -109,20 +110,20 @@
 
             $connection = Db::getConnection();
 
-            Logging::getLogger()->addDebug("finding user id for {$_POST['sender']}");
-            $woahlifeUser = new User();
-            $user = $woahlifeUser->getUserByEmail($postData['sender']);
-            Logging::getLogger()->addDebug("found user id for {$_POST['sender']}: {$user['id']}");
+            Logging::getLogger()->addDebug("Finding user id for {$_POST['sender']}");
+            $user = new User();
+            $user = $user->getUserByEmail($postData['sender']);
+            Logging::getLogger()->addDebug("Found user id for {$_POST['sender']}: {$user->id}");
 
             if (empty($user)) {
-                throw new \Exception("unable to find user id for {$_POST['sender']}");
+                throw new \Exception("Unable to find user id for {$_POST['sender']}");
             }
 
             $encryptionPassword = $this->determineEncryptionPassword($user);
             $encryptedText = $this->encryptJournalEntry($postData['stripped-text'], $encryptionPassword);
 
             $dbRecord = [
-                "user_id" => $user['id'],
+                "user_id" => $user->id,
                 "entry_text" => $encryptedText,
                 "entry_date" => date("Y-m-d", $this->determineEntryDateTimestampFromSubjectLine($postData['Subject'])),
                 "message_id" => $postData['Message-Id'],
@@ -130,9 +131,9 @@
                 "create_date" => date("Y-m-d H:i:s")
             ];
 
-            Logging::getLogger()->addDebug("saving journal post for {$postData['sender']} ({$dbRecord['user_id']}) entry date {$dbRecord['entry_date']}");
+            Logging::getLogger()->addDebug("Saving journal post for {$postData['sender']} ({$dbRecord['user_id']}) entry date {$dbRecord['entry_date']}");
 
-            $saved = $connection->insert('entries', $dbRecord);
+            $saved = $connection->insert($this->tableName, $dbRecord);
 
             // the db insert returns 1 when it successfully inserts 1 record, nicer to work with booleans though.
             return ($saved === 1) ? true : false;
@@ -148,7 +149,7 @@
          */
         private function determineEntryDateTimestampFromSubjectLine($subject) 
         {
-            Logging::getLogger()->addDebug("determining journal post date from subject line: {$subject}");
+            Logging::getLogger()->addDebug("Determining journal post date from subject line: {$subject}");
 
             // remove the RE: prefix
             $subject = preg_replace("/RE:\s?/i", "", $subject);
@@ -160,13 +161,13 @@
             // parse the text to determine the actual date of the journal entry
             $timestamp = strtotime($subject);
 
-            Logging::getLogger()->addDebug("determined journal post date to be " . date("r", $timestamp));
+            Logging::getLogger()->addDebug("Determined journal post date to be " . date("r", $timestamp));
 
             /**
-             * Only use the strtotime result if it's a valid timestamp in the last 12 months.
+             * Only use the strtotime result if it's a valid timestamp in the last 36 months.
              * It's better to assume the entry is for today, than for 12/31/1969
              */
-            if ($timestamp < strtotime("-12 months")) {
+            if ($timestamp < strtotime("-36 months")) {
                 $timestamp = time();
             }
 
@@ -178,12 +179,12 @@
          * One could make this way more complicated, but since our intent isn't security, rather
          * hidding data from developers of the site, this is good enough.
          * 
-         * @param array the user record
+         * @param \Woahlife\User The user object
          * @return string the password we use for encryption/decryption
          */
         private function determineEncryptionPassword($user) 
         {
-            $password = $user['email'];
+            $password = $user->email;
 
             return $password;
         }
