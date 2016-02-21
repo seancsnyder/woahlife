@@ -1,6 +1,6 @@
 <?php
     /**
-     * Handle the callback from mailgun when someone tries to signup.
+     * Handle the callback from mailgun when someone tries to browse their journals.
      * If Mailgun receives an HTTP 200, it considers that a success
      * If Mailgun receives an HTTP 406, it considers it a failure, but won't retry
      * If Mailgun receives any other response code, including a 500, it will attempt to notify
@@ -14,7 +14,7 @@
     
     try {
         $user = new User();
-        $saved = $user->signupUser($_POST);  
+        $browseSession = $user->createBrowseSession($_POST);  
 
         /**
          * Always respond with 200, unless an exception was thrown.
@@ -23,7 +23,7 @@
         http_response_code(200);
     } catch (Exception $e) {
         Logging::getLogger()->addError(
-            "Unable to save signup. " . $e->getMessage()
+            "Unable to create browsing session. " . $e->getMessage()
         );
         http_response_code(500);
     }   

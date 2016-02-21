@@ -49,7 +49,7 @@
                 "SELECT COUNT(*) AS total 
                 FROM {$this->tableName} 
                 WHERE user_id = ?", 
-                [$user['id']]
+                [$user->id]
             );
 
             Logging::getLogger()->addDebug("There are {$totalEntries} for {$email}");
@@ -70,7 +70,7 @@
                     WHERE user_id = ?
                     ORDER by entry_date ASC
                     LIMIT {$offset}, {$entriesPerIteration}", 
-                    [$user['id']]
+                    [$user->id]
                 );
 
                 foreach($entries as $entry) {
@@ -112,7 +112,7 @@
             Logging::getLogger()->addDebug("finding user id for {$_POST['sender']}");
             $woahlifeUser = new User();
             $user = $woahlifeUser->getUserByEmail($postData['sender']);
-            Logging::getLogger()->addDebug("found user id for {$_POST['sender']}: {$user['id']}");
+            Logging::getLogger()->addDebug("found user id for {$_POST['sender']}: {$user->id}");
 
             if (empty($user)) {
                 throw new \Exception("unable to find user id for {$_POST['sender']}");
@@ -122,7 +122,7 @@
             $encryptedText = $this->encryptJournalEntry($postData['stripped-text'], $encryptionPassword);
 
             $dbRecord = [
-                "user_id" => $user['id'],
+                "user_id" => $user->id,
                 "entry_text" => $encryptedText,
                 "entry_date" => date("Y-m-d", $this->determineEntryDateTimestampFromSubjectLine($postData['Subject'])),
                 "message_id" => $postData['Message-Id'],
@@ -132,7 +132,7 @@
 
             Logging::getLogger()->addDebug("saving journal post for {$postData['sender']} ({$dbRecord['user_id']}) entry date {$dbRecord['entry_date']}");
 
-            $saved = $connection->insert('entries', $dbRecord);
+            $saved = $connection->insert($this->tableName, $dbRecord);
 
             // the db insert returns 1 when it successfully inserts 1 record, nicer to work with booleans though.
             return ($saved === 1) ? true : false;
@@ -163,10 +163,10 @@
             Logging::getLogger()->addDebug("determined journal post date to be " . date("r", $timestamp));
 
             /**
-             * Only use the strtotime result if it's a valid timestamp in the last 12 months.
+             * Only use the strtotime result if it's a valid timestamp in the last 36 months.
              * It's better to assume the entry is for today, than for 12/31/1969
              */
-            if ($timestamp < strtotime("-12 months")) {
+            if ($timestamp < strtotime("-36 months")) {
                 $timestamp = time();
             }
 
@@ -178,12 +178,12 @@
          * One could make this way more complicated, but since our intent isn't security, rather
          * hidding data from developers of the site, this is good enough.
          * 
-         * @param array the user record
+         * @param \Woahlife\User The user object
          * @return string the password we use for encryption/decryption
          */
         private function determineEncryptionPassword($user) 
         {
-            $password = $user['email'];
+            $password = $user->email;
 
             return $password;
         }

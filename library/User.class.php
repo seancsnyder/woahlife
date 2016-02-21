@@ -14,6 +14,34 @@
     class User
     {
         private $tableName = "users";
+        
+        public $id;
+        public $name;
+        public $email;
+
+        /**
+         * Create an object from the data
+         * 
+         * @param array
+         * 
+         * @return \Woahlife\User|null
+         */
+        private function initializeObject($dataRecord)
+        {
+            $object = null;
+            
+            if (is_array($dataRecord) 
+               && count($dataRecord) > 0
+            ) {
+                $object = new User();
+                
+                $object->id = $dataRecord['id'];
+                $object->name = $dataRecord['name'];
+                $object->email = $dataRecord['email'];
+            }
+            
+            return $object;
+        }
 
         /**
          * Get an array of all the active users
@@ -24,20 +52,26 @@
         {
             $connection = Db::getConnection();
 
-            $users = $connection->fetchAll(
+            $userDataRecords = $connection->fetchAll(
                 "SELECT name, email 
                 FROM {$this->tableName} 
                 WHERE active = ?", 
                 [1]
             );
+            
+            $userObjects = [];
+            
+            foreach($userDataRecords as $userData) {
+                $userObjects[] = $this->initializeObject($userData);
+            }
 
-            return $users;
+            return $userObjects;
         }
 
         /**
          * Find the user id by email address
          *
-         * @return array
+         * @return \Woahlife\User
          */
         public function getUserByEmail($email)
         {
@@ -50,7 +84,7 @@
                 [$email]
             );
 
-            return $user;
+            return $this->initializeObject($user);
         }
 
         /**
@@ -101,7 +135,7 @@
 
             Logging::getLogger()->addDebug("saving signup for {$postData['sender']}");
 
-            $saved = $connection->insert('users', $dbRecord);
+            $saved = $connection->insert($this->tableName, $dbRecord);
 
             // the db insert returns 1 when it successfully inserts 1 record, nicer to work with booleans though.
             if ($saved === 1) {
