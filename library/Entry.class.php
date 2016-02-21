@@ -42,8 +42,8 @@
 
             $connection = Db::getConnection();
 
-            $woahlifeUser = new User();
-            $user = $woahlifeUser->getUserByEmail($email);
+            $user = new User();
+            $user = $user->getUserByEmail($email);
 
             $totalEntries = $connection->fetchColumn(
                 "SELECT COUNT(*) AS total 
@@ -110,8 +110,8 @@
             $connection = Db::getConnection();
 
             Logging::getLogger()->addDebug("finding user id for {$_POST['sender']}");
-            $woahlifeUser = new User();
-            $user = $woahlifeUser->getUserByEmail($postData['sender']);
+            $user = new User();
+            $user = $user->getUserByEmail($postData['sender']);
             Logging::getLogger()->addDebug("found user id for {$_POST['sender']}: {$user->id}");
 
             if (empty($user)) {

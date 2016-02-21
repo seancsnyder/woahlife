@@ -88,10 +88,10 @@
          * session url.
          *
          * @param \Woahlife\User $user The user object
-         * @param string sessionKey The browsing session key to use in the link
+         * @param string $sessionToken The browsing session key to use in the link
          * @return stdClass
          */
-        public function sendBrowsingSessionEmail($user, $browsingSessionKey)
+        public function sendBrowsingSessionEmail($user, $sessionToken)
         {
             Logging::getLogger()->addDebug("sending browsing session email to {$user->email}");
 
@@ -99,7 +99,7 @@
                 'from' => "{$this->mailgunConfig['fromName']} <{$this->mailgunConfig['signupFromAddress']}>", 
                 'to' => "{$user->name} <{$user->email}>", 
                 'subject' => "Browse Your Journal!", 
-                'text' =>  "Click this link to browse your journal: {$this->mailgunConfig['webUrl']}/browse.php?key={$browsingSessionKey}"
+                'text' =>  "Click this link to browse your journal: {$this->mailgunConfig['webUrl']}/browse.php?token={$sessionToken}"
             ];
 
             if (APP_MODE === "DEV") {

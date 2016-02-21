@@ -16,6 +16,52 @@
     {
         private $tableName = "browsing_sessions";
         
+        public $user;
+        public $validUntil;
+
+        /**
+         * Create an object from the data
+         * 
+         * @param array
+         * 
+         * @return \Woahlife\User|null
+         */
+        private function initializeObject($dataRecord)
+        {
+            $object = null;
+            
+            if (is_array($dataRecord) 
+               && count($dataRecord) > 0
+            ) {
+                $object = new BrowsingSession();
+                
+                $user = new User();
+                $object->user = $user->getUserById($dataRecord['id']);
+                $object->validUntil = $dataRecord['valid_until'];
+            }
+            
+            return $object;
+        }
+        
+        /**
+         * Find the browsing session by token
+         *
+         * @return \Woahlife\BrowsingSession
+         */
+        public function getBrowsingSessionByToken($sessionToken)
+        {
+            $connection = Db::getConnection();
+
+            $userData = $connection->fetchAssoc(
+                "SELECT user_id, valid_until
+                FROM {$this->tableName}
+                WHERE email = ?", 
+                [$email]
+            );
+
+            return $this->initializeObject($userData);
+        }
+        
         /**
          * Create a browsing session key, valid for a short amount of time.
          * 
@@ -42,13 +88,13 @@
                 return false;
             }
             
-            $browsingKey = $this->generateBrowsingSessionKey();
+            $sessionToken = $this->generateBrowsingSessionToken();
 
             $connection = Db::getConnection();
             
             $dbRecord = [
                 "user_id" => $user->id,
-                "key" => $browsingKey,
+                "session_token" => $sessionToken,
                 "create_date" => date("Y-m-d H:i:s"),
                 "valid_until" => date("Y-m-d H:i:s", strtotime("+3 hours"))
             ];
@@ -61,7 +107,7 @@
             if ($saved === 1) {
                 $mailgunner = new MailgunClient();
 
-                $mailgunned = $mailgunner->sendBrowsingSessionEmail($user, $browsingKey);
+                $mailgunned = $mailgunner->sendBrowsingSessionEmail($user, $sessionToken);
 
                 return true;
             }
@@ -74,9 +120,32 @@
          * 
          * @return string
          */
-        protected function generateBrowsingSessionKey()
+        protected function generateBrowsingSessionToken()
         {
-            return "randd";
+            return sha1(date("r") . mt_rand(0, 100000));
+        }
+        
+        /**
+         * Validate the browsing session. if it's valid, return the session
+         * otherwise, throw.
+         * 
+         * @param string $sessionToken The token we want to validate
+         * 
+         * @return \Woahlife\BrowsingSession
+         */
+        public function validateBrowsingSession($sessionToken)
+        {
+            $now = time();
+            
+            $browsingSession = $this->getBrowsingSessionByToken($sessionToken);
+            
+            if ($browsingSession == null 
+               || strtotime($browsingSession->validUntil) < $now
+            ) {
+                throw new Exception("Invalid browsing session");
+            }
+            
+            return $browsingSession;
         }
     }
 ?>

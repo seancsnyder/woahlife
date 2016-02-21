@@ -9,12 +9,12 @@
      */
     require_once("../bootstrap.php");
     
-    use Woahlife\User;
+    use Woahlife\BrowsingSession;
     use Woahlife\Logging;
     
     try {
-        $user = new User();
-        $browseSession = $user->createBrowseSession($_POST);  
+        $browseSession = new BrowsingSession();
+        $browseSession->createBrowseSession($_POST);
 
         /**
          * Always respond with 200, unless an exception was thrown.

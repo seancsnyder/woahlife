@@ -86,6 +86,25 @@
 
             return $this->initializeObject($userData);
         }
+        
+        /**
+         * Find the user by id
+         *
+         * @return \Woahlife\User
+         */
+        public function getUserById($id)
+        {
+            $connection = Db::getConnection();
+
+            $userData = $connection->fetchAssoc(
+                "SELECT id, email, create_date
+                FROM {$this->tableName}
+                WHERE id = ?", 
+                [$id]
+            );
+
+            return $this->initializeObject($userData);
+        }        
 
         /**
          * Given an array of data (typically posted from mailgun), signup a new user
