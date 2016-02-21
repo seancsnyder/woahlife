@@ -53,7 +53,7 @@
             $connection = Db::getConnection();
 
             $userDataRecords = $connection->fetchAll(
-                "SELECT name, email 
+                "SELECT id, name, email 
                 FROM {$this->tableName} 
                 WHERE active = ?", 
                 [1]
@@ -77,14 +77,14 @@
         {
             $connection = Db::getConnection();
 
-            $user = $connection->fetchAssoc(
+            $userData = $connection->fetchAssoc(
                 "SELECT id, email, create_date
                 FROM {$this->tableName}
                 WHERE email = ?", 
                 [$email]
             );
 
-            return $this->initializeObject($user);
+            return $this->initializeObject($userData);
         }
 
         /**
@@ -107,7 +107,7 @@
 
             Logging::getLogger()->addDebug("attempting to find user id for {$postData['sender']}");
             $existingUser = $this->getUserByEmail($postData['sender']);
-            Logging::getLogger()->addDebug("found user id for {$postData['sender']}: {$existingUser['id']}");
+            Logging::getLogger()->addDebug("found user id for {$postData['sender']}: {$existingUser->id}");
 
             if ($existingUser != null) {
                 // don't throw an exception. could give someone information that a email address is a user...
@@ -136,12 +136,14 @@
             Logging::getLogger()->addDebug("saving signup for {$postData['sender']}");
 
             $saved = $connection->insert($this->tableName, $dbRecord);
+            
+            $newUser = $this->getUserByEmail($postData['sender']);
 
             // the db insert returns 1 when it successfully inserts 1 record, nicer to work with booleans though.
             if ($saved === 1) {
                 $mailgunner = new MailgunClient();
 
-                $mailgunned = $mailgunner->sendWelcomeEmail($name, $postData['sender']);
+                $mailgunned = $mailgunner->sendWelcomeEmail($newUser);
 
                 return true;
             }

@@ -21,7 +21,7 @@
         $mailgunner = new MailgunClient();
 
         foreach($users as $user) {
-            Logging::getLogger()->addDebug("processing {$user['email']}");          
+            Logging::getLogger()->addDebug("processing {$user->email}");          
             
             /**
              * if the number of users grows to the thousands, you're better off using the
@@ -30,9 +30,9 @@
             $mailgunned = $mailgunner->sendDailyEmail($user);
 
             if ($mailgunned->http_response_code === 200) {
-                Logging::getLogger()->addDebug("successfully emailed {$user['email']}");
+                Logging::getLogger()->addDebug("successfully emailed {$user->email}");
             } else {
-                Logging::getLogger()->addError("unable to send email to {$user['email']}");
+                Logging::getLogger()->addError("unable to send email to {$user->email}");
                 Logging::getLogger()->addError("{$mailgunned->http_response_body->message}");
             }
         }
