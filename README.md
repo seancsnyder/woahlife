@@ -1,3 +1,4 @@
+## Woahlife
 I was a big fan of ohlife.com, but it'll be shutdown soon (10/11/14)...
 
 For those that don't know, ohlife.com was a really great way to maintain a daily journal.  Everyday, at a user configured time, ohlife would send you an email asking about your day. All you had to do was respond to that email, and ohlife would save the response as a journal entry. Ohlife provided a site, with a way to search past entries and a way to export your entries.  They also had a premium version that let you customize the email message that was sent to you and a way to auto backup your entries to dropbox.
